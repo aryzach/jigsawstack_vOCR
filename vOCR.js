@@ -1,10 +1,10 @@
 const { JigsawStack } = require("jigsawstack");
 const http = require("http");
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config(); 
 
 
 const jigsawstack = JigsawStack({
-  apiKey: process.env.JIGSAWSTACK_API_KEY, // Access the API key from the .env file
+  apiKey: process.env.JIGSAWSTACK_API_KEY, 
 });
 
 const POST = async (request, response) => {
@@ -19,19 +19,16 @@ const POST = async (request, response) => {
         const params = JSON.parse(body);
         const payload = {
           url: params.imageUrl,
-          prompt: ["DESCRIPTION", "RATE", "HOURS", "AMOUNT"], // streamline to the data you need.
+          prompt: ["DESCRIPTION", "RATE", "HOURS", "AMOUNT"], 
         };
 
-        // Await the response from the vision API and wrap in a try-catch
         const data = await jigsawstack.vision.vocr(payload);
 
         console.log(data);
 
-        // Send a successful response
         response.writeHead(200, { "Content-Type": "application/json" });
         response.end(JSON.stringify({ message: "ID verification successful", data }));
       } catch (apiError) {
-        // Handle the error from the API call
         console.error(apiError);
         response.writeHead(500, { "Content-Type": "application/json" });
         response.end(JSON.stringify({ message: "API Error", error: apiError.toString() }));
@@ -45,7 +42,6 @@ const POST = async (request, response) => {
 };
 
 
-// Create the HTTP server
 const server = http.createServer((req, res) => {
   if (req.method === "POST" && req.url === "/") {
     POST(req, res);
